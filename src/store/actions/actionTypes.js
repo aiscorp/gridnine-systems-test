@@ -1,0 +1,7 @@
+export const FILTERED_DATA = 'FILTERED_DATA'
+export const AIRLINES = 'AIRLINES'
+export const AIRLINE_FILTER = 'AIRLINE_FILTER'
+export const SORT_ORDER = 'SORT_ORDER'
+
+export const FETCH_READINGS_ERROR = 'FETCH_READINGS_ERROR'
+

@@ -1,33 +1,32 @@
 import classes from './FilterPanel.module.scss'
 import React, {useState} from 'react'
-import data from '../../flights.json'
+import {connect} from 'react-redux'
 import {Checker, Input, Tab, Radio} from './FilterPanel.functions'
+import {updateAirlineFilter, updateSortOrder} from '../../store/actions/search'
 
 const FilterPanel = (props) => {
+  const {airlines, availableAirlines, updateAirlineFilter, updateSortOrder, filters} = props
   const [checked, setChecked] = useState(false)
   const [input, setInput] = useState('')
 
-  console.log(input)
+  const sortLabels = ['по убыванию цены', 'по возростанию цены', 'по времени в пути']
 
   return (
     <>
       <div className={classes.panel}>
 
         <Tab caption='Сортировать'>
-          <Radio checked={checked} disabled={false}
-                 label={'по убыванию цены'}
-                 onClick={(s) => setChecked(s)}/>
-          <Radio checked={checked} disabled={false}
-                 label={'по возростанию цены'}
-                 onClick={(s) => setChecked(s)}/>
-          <Radio checked={checked} disabled={false}
-                 label={'по времени в пути'}
-                 onClick={(s) => setChecked(s)}/>
+          {sortLabels.map((el, key) => (
+            <Radio checked={filters.sortOrder === el}
+                   disabled={false}
+                   label={el} key={key}
+                   onClick={() => updateSortOrder(el)}/>
+          ))}
         </Tab>
 
-        <Tab caption='Фильтровать'>
+        <Tab caption='Пересадки'>
           <Checker checked={checked} disabled={false}
-                   label={'без пересадок'}
+                   label={'нет'}
                    onClick={(s) => setChecked(s)}/>
           <Checker checked={checked} disabled={false}
                    label={'1 пересадка'}
@@ -36,28 +35,36 @@ const FilterPanel = (props) => {
 
         <Tab caption='Цена'>
           <Input value={100} disabled={false}
-                 label={'Цена от'}
+                 label={'от'}
                  onChange={(s) => setInput(s)}/>
 
           <Input value={200} disabled={false}
-                 label={'Цена до'}
+                 label={'до'}
                  onChange={(s) => setInput(s)}/>
         </Tab>
 
         <Tab caption='Авиакомпании'>
-          <Checker checked={checked} disabled={false}
-                   label={'Компания 1'}
-                   onClick={(s) => setChecked(s)}/>
-          <Checker checked={checked} disabled={true}
-                   label={'Компания 2'}
-                   onClick={(s) => setChecked(s)}/>
-          <Checker checked={checked} disabled={false}
-                   label={'Компания 3'}
-                   onClick={(s) => setChecked(s)}/>
+          {airlines.map((el, key) => (
+            <Checker checked={filters.airline.indexOf(el) !== -1}
+                     disabled={availableAirlines.indexOf(el) === -1}
+                     label={el} key={key}
+                     onClick={() => updateAirlineFilter(el)}/>
+          ))}
         </Tab>
       </div>
     </>
   )
 }
 
-export default FilterPanel
+const mapStateToProps = state => ({
+  airlines: state.search.airlines,
+  availableAirlines: state.search.availableAirlines,
+  filters: state.search.filters
+})
+
+const mapDispatchToProps = {
+  updateAirlineFilter,
+  updateSortOrder
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(FilterPanel)

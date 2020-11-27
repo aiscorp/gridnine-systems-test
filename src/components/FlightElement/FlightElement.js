@@ -3,15 +3,13 @@ import {ChooseButton, Header, Leg} from './FlightElement.functions'
 import classes from './FlightElement.module.scss'
 
 const FlightElement = (props) => {
-  const {flight, key} = props
+  const {flight} = props
 
   const {carrier, price, legs} = flight
 
-  console.log(flight)
-
   return (
     <>
-      <div className={classes.flight} key={key}>
+      <div className={classes.flight}>
         <Header carrier={carrier} price={price}/>
         <Leg legs={legs[0]}/>
         <Leg legs={legs[1]}/>
@@ -22,6 +20,8 @@ const FlightElement = (props) => {
 }
 
 export default FlightElement
+
+
 
 // const flight = {
 //   'carrier':

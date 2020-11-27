@@ -1,3 +1,8 @@
 .App {
+    display: flex;
+    background: #eef3f8;
+}
+
+.container {
 
 }

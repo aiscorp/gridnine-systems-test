@@ -43,21 +43,22 @@ export const Leg = ({legs}) => {
         &nbsp;
         <FontAwesomeIcon className={classes.arrow} size="1x" icon={faLongArrowAltRight}/>
         &nbsp;
-        <span>{lastSegment.departureCity.caption}</span>
+        <span>{lastSegment.arrivalCity.caption}</span>
         ,&nbsp;
-        <span>{lastSegment.departureAirport.caption}</span>
+        <span>{lastSegment.arrivalAirport.caption}</span>
         &nbsp;
-        <span className={classes.info}>({lastSegment.departureAirport.uid})</span>
+        <span className={classes.info}>({lastSegment.arrivalAirport.uid})</span>
       </div>
       <div className={classes.underline}/>
       <div className={classes.scheduleLine}>
         <div>
           <span>
-            {moment(lastSegment.departureDate).format('hh:mm')}
+            {firstSegment.departureDate}&nbsp;
+            {moment(firstSegment.departureDate).format('LT')}
           </span>
           &nbsp;
           <span className={classes.info}>
-            {moment(lastSegment.departureDate).format('D MMM dd')}
+            {moment(firstSegment.departureDate).format('D MMM dd')}
           </span>
         </div>
         <div>
@@ -74,7 +75,8 @@ export const Leg = ({legs}) => {
             </span>
           &nbsp;
           <span>
-            {moment(lastSegment.arrivalDate).format('hh:mm')}
+            {moment(lastSegment.arrivalDate).format('LT')}
+            &nbsp;{lastSegment.arrivalDate}
             </span>
         </div>
       </div>
@@ -82,7 +84,8 @@ export const Leg = ({legs}) => {
         {segments}
       </div>
       <div className={classes.line}>
-        <span>Рейс выполняет: {firstSegment.airline.airlineCode}&nbsp;{firstSegment.airline.caption}</span>
+        <span>Рейс выполняет:
+          {firstSegment.airline.airlineCode}&nbsp;{firstSegment.airline.caption}</span>
       </div>
     </div>
   )
