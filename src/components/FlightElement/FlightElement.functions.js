@@ -53,7 +53,6 @@ export const Leg = ({legs}) => {
       <div className={classes.scheduleLine}>
         <div>
           <span>
-            {firstSegment.departureDate}&nbsp;
             {moment(firstSegment.departureDate).format('LT')}
           </span>
           &nbsp;
@@ -65,7 +64,7 @@ export const Leg = ({legs}) => {
           <FontAwesomeIcon size="1x" icon={faClock}/>
           &nbsp;
           <span>
-            {Math.round(legs.duration / 60)}&nbsp;ч&nbsp;
+            {Math.floor(legs.duration / 60)}&nbsp;ч&nbsp;
             {legs.duration % 60}&nbsp;мин
           </span>
         </div>
@@ -76,7 +75,6 @@ export const Leg = ({legs}) => {
           &nbsp;
           <span>
             {moment(lastSegment.arrivalDate).format('LT')}
-            &nbsp;{lastSegment.arrivalDate}
             </span>
         </div>
       </div>
