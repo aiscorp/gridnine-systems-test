@@ -100,21 +100,25 @@ const sortByOrderReducer = (state, action) => {
 const applyFilters = (state) => {
   let filteredData = state.data
 
-  if (state.filters.airline.length)
-    filteredData = airlineFilter(filteredData, state.filters)
-
   filteredData = priceFilter(filteredData, state.filters)
+
+  const _availableSegments = getSegments(filteredData)
 
   if (state.filters.segment.length)
     filteredData = segmentsFilter(filteredData, state.filters)
+
+  const _availableAirlines = getAirlines(filteredData)
+
+  if (state.filters.airline.length)
+    filteredData = airlineFilter(filteredData, state.filters)
 
   sortByOrder(filteredData, state.filters)
 
   return {
     ...state,
     filtered: filteredData,
-    availableAirlines: getAirlines(filteredData),
-    availableSegments: getSegments(filteredData),
+    availableAirlines: _availableAirlines,
+    availableSegments: _availableSegments,
     availablePrices: getPrices(filteredData)
   }
 }
