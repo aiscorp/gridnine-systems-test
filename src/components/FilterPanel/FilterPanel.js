@@ -7,8 +7,8 @@ import {updateAirlineFilter, updatePriceFilter, updateSegmentFilter, updateSortO
 const FilterPanel = (props) => {
   const {
     airlines, availableAirlines, updateAirlineFilter,
-    updateSortOrder, updatePriceFilter, updateSegmentFilter,
-    filters
+    updateSortOrder, availablePrices, updatePriceFilter,
+    availableSegments, updateSegmentFilter, filters
   } = props
 
   const sortLabels = ['по убыванию цены', 'по возростанию цены', 'по времени в пути']
@@ -31,7 +31,7 @@ const FilterPanel = (props) => {
         <Tab caption='Пересадки'>
           {segmentLabels.map((el, index) => (
             <Checker checked={filters.segment.indexOf(index + 1) !== -1}
-                     disabled={false}
+                     disabled={availableSegments.indexOf(index + 1) === -1}
                      label={el}
                      key={index}
                      onClick={() => updateSegmentFilter(index + 1)}/>
@@ -41,13 +41,13 @@ const FilterPanel = (props) => {
         <Tab caption='Цена'>
           <NumberInput value={filters.price.from}
                        disabled={false}
-                       label={'от'}
-                       onChange={(input) => updatePriceFilter({from: input})}/>
+                       label={'от' + ' (' + availablePrices.from + ')'}
+                       onChange={(input) => updatePriceFilter({from: input + 1})}/>
 
           <NumberInput value={filters.price.to}
                        disabled={false}
-                       label={'до'}
-                       onChange={(input) => updatePriceFilter({to: input})}/>
+                       label={'до' + ' (' + availablePrices.to + ')'}
+                       onChange={(input) => updatePriceFilter({to: input + 1})}/>
         </Tab>
 
         <Tab caption='Авиакомпании'>
@@ -66,6 +66,8 @@ const FilterPanel = (props) => {
 const mapStateToProps = state => ({
   airlines: state.search.airlines,
   availableAirlines: state.search.availableAirlines,
+  availableSegments: state.search.availableSegments,
+  availablePrices: state.search.availablePrices,
   filters: state.search.filters
 })
 

@@ -11,12 +11,13 @@ const initialState = {
   data: searchResult.result.flights,
   filtered: [],
   filters: {
-    sortOrder: 'по убыванию цены',
+    sortOrder: 'по возростанию цены',
     segment: [],
     price: {from: 0, to: 50000},
     airline: []
   },
-  airlines: {}
+  airlines: {},
+  availableAirlines: {}
 }
 
 export default function searchReducer(state = initialState, action) {
@@ -42,9 +43,11 @@ export default function searchReducer(state = initialState, action) {
       return {
         data: state.data,
         filtered: applyFilters(state).filtered,
-        airlines: getAirlines(state),
-        availableAirlines: getAirlines(applyFilters(state)),
-        filters: state.filters
+        airlines: getAirlines(state.data),
+        availableAirlines: getAirlines(state.data),
+        availableSegments: getSegments(state.data),
+        availablePrices: getPrices(state.data),
+        filters: {...state.filters, price: getPrices(state.data)}
       }
   }
 }
@@ -81,10 +84,10 @@ const segmentReducer = (state, action) => {
   })
 }
 
-const priceReducer = (state, action) => ( applyFilters({
-    ...state,
-    filters: {...state.filters, price: {...state.filters.price, ...action.data}}
-  }))
+const priceReducer = (state, action) => (applyFilters({
+  ...state,
+  filters: {...state.filters, price: {...state.filters.price, ...action.data}}
+}))
 
 
 const sortByOrderReducer = (state, action) => {
@@ -109,12 +112,29 @@ const applyFilters = (state) => {
 
   return {
     ...state,
-    filtered: filteredData
+    filtered: filteredData,
+    availableAirlines: getAirlines(filteredData),
+    availableSegments: getSegments(filteredData),
+    availablePrices: getPrices(filteredData)
   }
 }
 
-const getAirlines = (state) => {
-  return [...new Set(state.data.map(el => el.flight.carrier.caption))]
+const getAirlines = (data) => [...new Set(data.map(el => el.flight.carrier.caption))]
+
+const getSegments = (data) =>  [...new Set(data.map(el => {
+    const segTo = el.flight.legs[0].segments.length
+    const segOut = el.flight.legs[1].segments.length
+    return segTo > segOut ? segTo : segOut
+  }))]
+
+
+const getPrices = (data) => {
+  const res = data.map(el => el.flight.price.passengerPrices[0].singlePassengerTotal.amount)
+
+  const minmax = {from: Math.min(...res), to: Math.max(...res)}
+
+  console.log(minmax)
+  return minmax
 }
 
 const airlineFilter = (data, filters) => {
