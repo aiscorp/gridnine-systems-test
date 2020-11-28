@@ -1,7 +1,7 @@
 {
   "name": "gridnine-systems-test",
   "version": "0.1.0",
-  "homepage1": "https://aiscorp.github.io/gridnine-systems-test",
+  "homepage": "https://aiscorp.github.io/gridnine-systems-test",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.32",
     "@fortawesome/free-regular-svg-icons": "^5.15.1",
