@@ -1,23 +1,22 @@
-import {AIRLINE_FILTER, FILTERED_DATA, SORT_ORDER} from './actionTypes'
-
-export function updateFilters(filters) {
-  return async dispatch => {
-    dispatch(updateFilteredData())
-  }
-}
-
-
-
-export function updateFilteredData() {
-  return {
-    type: FILTERED_DATA,
-    data: null
-  }
-}
+import {AIRLINE_FILTER, PRICE_FILTER, SEGMENT_FILTER, SORT_ORDER} from './actionTypes'
 
 export function updateAirlineFilter(filter) {
   return {
     type: AIRLINE_FILTER,
+    data: filter
+  }
+}
+
+export function updateSegmentFilter(filter) {
+  return {
+    type: SEGMENT_FILTER,
+    data: filter
+  }
+}
+
+export function updatePriceFilter(filter) {
+  return {
+    type: PRICE_FILTER,
     data: filter
   }
 }

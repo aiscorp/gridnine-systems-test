@@ -35,34 +35,26 @@ export const Leg = ({legs}) => {
   return (
     <div className={classes.leg}>
       <div className={classes.line}>
-        <span>{firstSegment.departureCity.caption}</span>
-        ,&nbsp;
-        <span>{firstSegment.departureAirport.caption}</span>
-        &nbsp;
-        <span className={classes.info}>({firstSegment.departureAirport.uid})</span>
-        &nbsp;
-        <FontAwesomeIcon className={classes.arrow} size="1x" icon={faLongArrowAltRight}/>
-        &nbsp;
-        <span>{lastSegment.arrivalCity.caption}</span>
-        ,&nbsp;
-        <span>{lastSegment.arrivalAirport.caption}</span>
-        &nbsp;
+        <span>{firstSegment.departureCity ? firstSegment.departureCity.caption : 'err'},&nbsp;</span>
+        <span>{firstSegment.departureAirport.caption}&nbsp;</span>
+        <span className={classes.info}>({firstSegment.departureAirport.uid})&nbsp;</span>
+        <FontAwesomeIcon className={classes.arrow} size="1x" icon={faLongArrowAltRight}/>&nbsp;
+        <span>{lastSegment.arrivalCity ? lastSegment.arrivalCity.caption : 'err'},&nbsp;</span>
+        <span>{lastSegment.arrivalAirport.caption}&nbsp;</span>
         <span className={classes.info}>({lastSegment.arrivalAirport.uid})</span>
       </div>
       <div className={classes.underline}/>
       <div className={classes.scheduleLine}>
         <div>
           <span>
-            {moment(firstSegment.departureDate).format('LT')}
+            {moment(firstSegment.departureDate).format('LT')}&nbsp;
           </span>
-          &nbsp;
           <span className={classes.info}>
             {moment(firstSegment.departureDate).format('D MMM dd')}
           </span>
         </div>
         <div>
-          <FontAwesomeIcon size="1x" icon={faClock}/>
-          &nbsp;
+          <FontAwesomeIcon size="1x" icon={faClock}/>&nbsp;
           <span>
             {Math.floor(legs.duration / 60)}&nbsp;ч&nbsp;
             {legs.duration % 60}&nbsp;мин
@@ -71,8 +63,7 @@ export const Leg = ({legs}) => {
         <div>
           <span className={classes.info}>
             {moment(lastSegment.arrivalDate).format('D MMM dd')}
-            </span>
-          &nbsp;
+            &nbsp;</span>
           <span>
             {moment(lastSegment.arrivalDate).format('LT')}
             </span>

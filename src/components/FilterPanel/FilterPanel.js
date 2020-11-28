@@ -1,53 +1,60 @@
 import classes from './FilterPanel.module.scss'
-import React, {useState} from 'react'
+import React from 'react'
 import {connect} from 'react-redux'
-import {Checker, Input, Tab, Radio} from './FilterPanel.functions'
-import {updateAirlineFilter, updateSortOrder} from '../../store/actions/search'
+import {Checker, NumberInput, Tab, Radio} from './FilterPanel.functions'
+import {updateAirlineFilter, updatePriceFilter, updateSegmentFilter, updateSortOrder} from '../../store/actions/search'
 
 const FilterPanel = (props) => {
-  const {airlines, availableAirlines, updateAirlineFilter, updateSortOrder, filters} = props
-  const [checked, setChecked] = useState(false)
-  const [input, setInput] = useState('')
+  const {
+    airlines, availableAirlines, updateAirlineFilter,
+    updateSortOrder, updatePriceFilter, updateSegmentFilter,
+    filters
+  } = props
 
   const sortLabels = ['по убыванию цены', 'по возростанию цены', 'по времени в пути']
+  const segmentLabels = ['нет', '1 пересадка']
 
   return (
     <>
       <div className={classes.panel}>
 
         <Tab caption='Сортировать'>
-          {sortLabels.map((el, key) => (
+          {sortLabels.map((el, index) => (
             <Radio checked={filters.sortOrder === el}
                    disabled={false}
-                   label={el} key={key}
+                   label={el}
+                   key={index}
                    onClick={() => updateSortOrder(el)}/>
           ))}
         </Tab>
 
         <Tab caption='Пересадки'>
-          <Checker checked={checked} disabled={false}
-                   label={'нет'}
-                   onClick={(s) => setChecked(s)}/>
-          <Checker checked={checked} disabled={false}
-                   label={'1 пересадка'}
-                   onClick={(s) => setChecked(s)}/>
+          {segmentLabels.map((el, index) => (
+            <Checker checked={filters.segment.indexOf(index + 1) !== -1}
+                     disabled={false}
+                     label={el}
+                     key={index}
+                     onClick={() => updateSegmentFilter(index + 1)}/>
+          ))}
         </Tab>
 
         <Tab caption='Цена'>
-          <Input value={100} disabled={false}
-                 label={'от'}
-                 onChange={(s) => setInput(s)}/>
+          <NumberInput value={filters.price.from}
+                       disabled={false}
+                       label={'от'}
+                       onChange={(input) => updatePriceFilter({from: input})}/>
 
-          <Input value={200} disabled={false}
-                 label={'до'}
-                 onChange={(s) => setInput(s)}/>
+          <NumberInput value={filters.price.to}
+                       disabled={false}
+                       label={'до'}
+                       onChange={(input) => updatePriceFilter({to: input})}/>
         </Tab>
 
         <Tab caption='Авиакомпании'>
-          {airlines.map((el, key) => (
+          {airlines.map((el, index) => (
             <Checker checked={filters.airline.indexOf(el) !== -1}
                      disabled={availableAirlines.indexOf(el) === -1}
-                     label={el} key={key}
+                     label={el} key={index}
                      onClick={() => updateAirlineFilter(el)}/>
           ))}
         </Tab>
@@ -64,7 +71,9 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   updateAirlineFilter,
-  updateSortOrder
+  updateSortOrder,
+  updateSegmentFilter,
+  updatePriceFilter
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(FilterPanel)

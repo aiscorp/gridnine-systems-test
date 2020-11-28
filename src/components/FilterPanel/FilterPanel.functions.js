@@ -41,67 +41,43 @@ export const Radio = ({checked, label, onClick, disabled}) => {
   )
 }
 
-export const Input = ({value, label, onChange, disabled}) => {
-  const cls = disabled ?
-    [classes.input, classes.disabled].join(' ') : classes.input
-
+export const NumberInput = ({value, label, onChange, disabled}) => {
   const [input, setInput] = useState(value)
+  const [error, setError] = useState(false)
+  const [delay, setDelay] = useState(null)
 
-  let timeout = null
+  const cls = [classes.input, disabled ? classes.disabled : '']
 
   const debounce = (value) => {
-    if (timeout) {
-      clearTimeout(timeout)
+    if (delay) {
+      clearTimeout(delay)
     }
-    timeout = setTimeout(() => {
+    const _delay = setTimeout(() => {
       onChange(value)
-    }, 1000)
+    }, 500)
+    setDelay(_delay)
   }
 
   const onChangeHandler = (e) => {
     const value = e.target.value
-    setInput(value)
-    debounce(value)
+
+    if (isNaN(Number(value))) {
+      setInput(value)
+      setError(true)
+    } else {
+      setError(false)
+      setInput(Number(value))
+      debounce(Number(value))
+    }
   }
 
   return (
-    <div className={cls}>
+    <div className={cls.join(' ')}>
       <span>{label}&nbsp;</span>
-      <input type="text" value={input} onChange={onChangeHandler}/>
+      <input className={error ? classes.error : ''}
+             type="text"
+             value={input}
+             onChange={onChangeHandler}/>
     </div>
   )
-}
-
-export const panels = {
-  byTarget: {
-    caption: 'Сортировать',
-    items: [
-      {type: 'radio', checked: true, disabled: false, label: 'по возростанию цены'},
-      {type: 'radio', checked: false, disabled: false, label: 'по убыванию цены'},
-      {type: 'radio', checked: false, disabled: false, label: 'по времени в пути'}
-    ]
-  },
-  bySegments: {
-    caption: 'Фильтровать',
-    items: [
-      {type: 'checker', checked: true, disabled: false, label: 'без пересадок'},
-      {type: 'checker', checked: true, disabled: false, label: '1 пересадка'},
-      {type: 'checker', checked: false, disabled: true, label: '2 пересадки'}
-    ]
-  },
-  byPrice: {
-    caption: 'Цена',
-    items: [
-      {type: 'input', value: null, disabled: false, label: 'Цена от'},
-      {type: 'input', value: null, disabled: false, label: 'Цена до'}
-    ]
-  },
-  byAirline: {
-    caption: 'Авиакомпании',
-    items: [
-      {type: 'checker', checked: true, disabled: false, label: 'Best airlines 1'},
-      {type: 'checker', checked: true, disabled: false, label: 'Best airlines 2'},
-      {type: 'checker', checked: false, disabled: true, label: 'Best airlines 3'}
-    ]
-  }
 }

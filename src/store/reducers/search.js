@@ -1,13 +1,19 @@
 import searchResult from '../../flights.json'
-import {AIRLINE_FILTER, AIRLINES, FILTERED_DATA, SORT_ORDER} from '../actions/actionTypes'
+import {
+  AIRLINE_FILTER,
+  AIRLINES,
+  PRICE_FILTER,
+  SEGMENT_FILTER,
+  SORT_ORDER
+} from '../actions/actionTypes'
 
 const initialState = {
-  data: searchResult.result.flights.slice(0, 50),
+  data: searchResult.result.flights,
   filtered: [],
   filters: {
     sortOrder: 'по убыванию цены',
-    segment: [1, 2],
-    price: {from: 0, to: 200000},
+    segment: [],
+    price: {from: 0, to: 50000},
     airline: []
   },
   airlines: {}
@@ -15,36 +21,33 @@ const initialState = {
 
 export default function searchReducer(state = initialState, action) {
   switch (action.type) {
-    case FILTERED_DATA:
-      return {
-        ...state, filtered: getFilteredData(state)
-      }
     case AIRLINE_FILTER:
       return airlineFilterReducer(state, action)
 
+    case SEGMENT_FILTER:
+      return segmentReducer(state, action)
+
+    case PRICE_FILTER:
+      return priceReducer(state, action)
+
     case SORT_ORDER:
-      const _filters = {...state.filters, sortOrder: action.data}
-      return {
-        ...state,
-        filters: _filters,
-        filtered: sortByOrder(state.filtered, _filters)
-      }
+      return sortByOrderReducer(state, action)
 
     case AIRLINES:
       return {
         ...state, airlines: action.data
       }
+
     default:
       return {
         data: state.data,
-        filtered: getFilteredData(state),
-        airlines: getAirlines(state.data),
-        availableAirlines: getAirlines(getFilteredData(state)),
+        filtered: applyFilters(state).filtered,
+        airlines: getAirlines(state),
+        availableAirlines: getAirlines(applyFilters(state)),
         filters: state.filters
       }
   }
 }
-
 
 const airlineFilterReducer = (state, action) => {
   const {airline} = state.filters
@@ -62,14 +65,47 @@ const airlineFilterReducer = (state, action) => {
   })
 }
 
+const segmentReducer = (state, action) => {
+  const {segment} = state.filters
+  let _segment
+
+  if (segment.indexOf(action.data) !== -1) {
+    _segment = segment.filter(el => el !== action.data)
+  } else {
+    _segment = [...segment, action.data]
+  }
+
+  return applyFilters({
+    ...state,
+    filters: {...state.filters, segment: _segment}
+  })
+}
+
+const priceReducer = (state, action) => ( applyFilters({
+    ...state,
+    filters: {...state.filters, price: {...state.filters.price, ...action.data}}
+  }))
+
+
+const sortByOrderReducer = (state, action) => {
+  return applyFilters({
+    ...state,
+    filters: {...state.filters, sortOrder: action.data}
+  })
+}
+
 const applyFilters = (state) => {
   let filteredData = state.data
+
   if (state.filters.airline.length)
-    filteredData = airlineFilter(state.data, state.filters)
+    filteredData = airlineFilter(filteredData, state.filters)
 
-  priceFilter(state.filtered, state.filters)
+  filteredData = priceFilter(filteredData, state.filters)
 
-  sortByOrder(state.filtered, state.filters)
+  if (state.filters.segment.length)
+    filteredData = segmentsFilter(filteredData, state.filters)
+
+  sortByOrder(filteredData, state.filters)
 
   return {
     ...state,
@@ -77,18 +113,9 @@ const applyFilters = (state) => {
   }
 }
 
-const getAirlines = (data) => {
-  return [...new Set(data.map(el => el.flight.carrier.caption))]
+const getAirlines = (state) => {
+  return [...new Set(state.data.map(el => el.flight.carrier.caption))]
 }
-
-const getFilteredData = (state) => {
-  let filteredData = state.data
-  if (state.filters.airline.length)
-    filteredData = airlineFilter(state.data, state.filters)
-
-  return filteredData
-}
-
 
 const airlineFilter = (data, filters) => {
   return data.filter(el => filters.airline.indexOf(el.flight.carrier.caption) !== -1)
@@ -104,7 +131,13 @@ const priceFilter = (data, filters) => {
 }
 
 const segmentsFilter = (data, filters) => {
-  return data.filter(el => filters.segment.indexOf(el.flight.carrier.caption) !== -1)
+  return data.filter(el => {
+    const segTo = el.flight.legs[0].segments.length
+    const segOut = el.flight.legs[1].segments.length
+    const seg = segTo > segOut ? segTo : segOut  // наибольшее кол-во сегментов полета (1 или 2)
+
+    return filters.segment.indexOf(seg) !== -1
+  })
 }
 
 const sortByOrder = (data, filters) => {
