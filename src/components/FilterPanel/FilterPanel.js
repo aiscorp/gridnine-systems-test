@@ -41,12 +41,12 @@ const FilterPanel = (props) => {
         <Tab caption='Цена'>
           <NumberInput value={filters.price.from}
                        disabled={false}
-                       label={'от' + ' (' + availablePrices.from + ')'}
+                       label={`от (${availablePrices.from})`}
                        onChange={(input) => updatePriceFilter({from: input + 1})}/>
 
           <NumberInput value={filters.price.to}
                        disabled={false}
-                       label={'до' + ' (' + availablePrices.to + ')'}
+                       label={`до (${availablePrices.to})`}
                        onChange={(input) => updatePriceFilter({to: input + 1})}/>
         </Tab>
 
