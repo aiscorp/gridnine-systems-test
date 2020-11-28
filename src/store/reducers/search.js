@@ -1,10 +1,7 @@
 import searchResult from '../../flights.json'
 import {
-  AIRLINE_FILTER,
-  AIRLINES,
-  PRICE_FILTER,
-  SEGMENT_FILTER,
-  SORT_ORDER
+  AIRLINE_FILTER, PRICE_FILTER,
+  SEGMENT_FILTER, SORT_ORDER, PAGINATOR
 } from '../actions/actionTypes'
 
 const initialState = {
@@ -13,11 +10,12 @@ const initialState = {
   filters: {
     sortOrder: 'по возростанию цены',
     segment: [],
-    price: {from: 0, to: 50000},
+    price: {},
     airline: []
   },
   airlines: {},
-  availableAirlines: {}
+  availableAirlines: {},
+  paginator: 3
 }
 
 export default function searchReducer(state = initialState, action) {
@@ -34,21 +32,22 @@ export default function searchReducer(state = initialState, action) {
     case SORT_ORDER:
       return sortByOrderReducer(state, action)
 
-    case AIRLINES:
+    case PAGINATOR:
       return {
-        ...state, airlines: action.data
+        ...state, paginator: state.paginator + action.data
       }
 
     default:
-      return {
+      const defaultState = {
         data: state.data,
-        filtered: applyFilters(state).filtered,
         airlines: getAirlines(state.data),
         availableAirlines: getAirlines(state.data),
         availableSegments: getSegments(state.data),
         availablePrices: getPrices(state.data),
-        filters: {...state.filters, price: getPrices(state.data)}
+        filters: {...state.filters, price: getPrices(state.data)},
+        paginator: state.paginator
       }
+      return applyFilters(defaultState)
   }
 }
 
@@ -62,10 +61,16 @@ const airlineFilterReducer = (state, action) => {
     _airline = [...airline, action.data]
   }
 
-  return applyFilters({
+  const newState = applyFilters({
     ...state,
     filters: {...state.filters, airline: _airline}
   })
+
+  return {
+    ...newState,
+    availableSegments: getSegments(newState.filtered),
+    availablePrices: getPrices(newState.filtered)
+  }
 }
 
 const segmentReducer = (state, action) => {
@@ -78,16 +83,30 @@ const segmentReducer = (state, action) => {
     _segment = [...segment, action.data]
   }
 
-  return applyFilters({
+  const newState = applyFilters({
     ...state,
     filters: {...state.filters, segment: _segment}
   })
+
+  return {
+    ...newState,
+    availableAirlines: getAirlines(newState.filtered),
+    availablePrices: getPrices(newState.filtered)
+  }
 }
 
-const priceReducer = (state, action) => (applyFilters({
-  ...state,
-  filters: {...state.filters, price: {...state.filters.price, ...action.data}}
-}))
+const priceReducer = (state, action) => {
+  const newState = applyFilters({
+    ...state,
+    filters: {...state.filters, price: {...state.filters.price, ...action.data}}
+  })
+
+  return {
+    ...newState,
+    availableAirlines: getAirlines(newState.filtered),
+    availableSegments: getSegments(newState.filtered)
+  }
+}
 
 
 const sortByOrderReducer = (state, action) => {
@@ -98,47 +117,38 @@ const sortByOrderReducer = (state, action) => {
 }
 
 const applyFilters = (state) => {
-  let filteredData = state.data
+  let newFilteredData = state.data
 
-  filteredData = priceFilter(filteredData, state.filters)
-
-  const _availableSegments = getSegments(filteredData)
+  newFilteredData = priceFilter(newFilteredData, state.filters)
 
   if (state.filters.segment.length)
-    filteredData = segmentsFilter(filteredData, state.filters)
-
-  const _availableAirlines = getAirlines(filteredData)
+    newFilteredData = segmentsFilter(newFilteredData, state.filters)
 
   if (state.filters.airline.length)
-    filteredData = airlineFilter(filteredData, state.filters)
+    newFilteredData = airlineFilter(newFilteredData, state.filters)
 
-  sortByOrder(filteredData, state.filters)
+  sortByOrder(newFilteredData, state.filters)
 
   return {
     ...state,
-    filtered: filteredData,
-    availableAirlines: _availableAirlines,
-    availableSegments: _availableSegments,
-    availablePrices: getPrices(filteredData)
+    filtered: newFilteredData,
+    paginator: resetPaginator()
   }
 }
 
 const getAirlines = (data) => [...new Set(data.map(el => el.flight.carrier.caption))]
 
-const getSegments = (data) =>  [...new Set(data.map(el => {
-    const segTo = el.flight.legs[0].segments.length
-    const segOut = el.flight.legs[1].segments.length
-    return segTo > segOut ? segTo : segOut
-  }))]
+const getSegments = (data) => [...new Set(data.map(el => {
+  const segTo = el.flight.legs[0].segments.length
+  const segOut = el.flight.legs[1].segments.length
+  return segTo > segOut ? segTo : segOut
+}))]
 
 
 const getPrices = (data) => {
   const res = data.map(el => el.flight.price.passengerPrices[0].singlePassengerTotal.amount)
 
-  const minmax = {from: Math.min(...res), to: Math.max(...res)}
-
-  console.log(minmax)
-  return minmax
+  return {from: Math.min(...res), to: Math.max(...res)}
 }
 
 const airlineFilter = (data, filters) => {
@@ -186,3 +196,5 @@ const sortByOrder = (data, filters) => {
       return data
   }
 }
+
+const resetPaginator = () => initialState.paginator

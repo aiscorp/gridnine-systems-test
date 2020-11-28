@@ -1,4 +1,4 @@
-import {AIRLINE_FILTER, PRICE_FILTER, SEGMENT_FILTER, SORT_ORDER} from './actionTypes'
+import {AIRLINE_FILTER, PAGINATOR, PRICE_FILTER, SEGMENT_FILTER, SORT_ORDER} from './actionTypes'
 
 export function updateAirlineFilter(filter) {
   return {
@@ -25,5 +25,12 @@ export function updateSortOrder(sortOrder) {
   return {
     type: SORT_ORDER,
     data: sortOrder
+  }
+}
+
+export function paginatorAddElements(number) {
+  return {
+    type: PAGINATOR,
+    data: number
   }
 }

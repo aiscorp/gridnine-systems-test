@@ -80,8 +80,10 @@ export const Leg = ({legs}) => {
   )
 }
 
-export const ChooseButton = () => (
-  <div className={classes.chooseButton}>
-    ВЫБРАТЬ
-  </div>
-)
+export const ChooseButton = ({label, onClick}) => {
+  return (
+    <div className={classes.chooseButton} onClick={onClick}>
+      {label}
+    </div>
+  )
+}

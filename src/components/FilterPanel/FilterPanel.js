@@ -2,7 +2,8 @@ import classes from './FilterPanel.module.scss'
 import React from 'react'
 import {connect} from 'react-redux'
 import {Checker, NumberInput, Tab, Radio} from './FilterPanel.functions'
-import {updateAirlineFilter, updatePriceFilter, updateSegmentFilter, updateSortOrder} from '../../store/actions/search'
+import {updateAirlineFilter, updatePriceFilter,
+  updateSegmentFilter, updateSortOrder} from '../../store/actions/search'
 
 const FilterPanel = (props) => {
   const {
@@ -11,8 +12,8 @@ const FilterPanel = (props) => {
     availableSegments, updateSegmentFilter, filters
   } = props
 
-  const sortLabels = ['по убыванию цены', 'по возростанию цены', 'по времени в пути']
-  const segmentLabels = ['нет', '1 пересадка']
+  const sortLabels = ['по возростанию цены', 'по убыванию цены', 'по времени в пути']
+  const segmentLabels = ['нет', '1 пересадка', '2 пересадки']
 
   return (
     <>

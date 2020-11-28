@@ -12,7 +12,7 @@ const FlightElement = (props) => {
         <Header carrier={carrier} price={price}/>
         <Leg legs={legs[0]}/>
         <Leg legs={legs[1]}/>
-        <ChooseButton/>
+        <ChooseButton label='ВЫБРАТЬ' onClick={() => {alert(carrier.caption)}}/>
       </div>
     </>
   )
