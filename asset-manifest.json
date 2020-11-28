@@ -1,20 +1,20 @@
 {
   "files": {
-    "main.css": "/static/css/main.626adc0c.chunk.css",
-    "main.js": "/static/js/main.31b492c9.chunk.js",
-    "main.js.map": "/static/js/main.31b492c9.chunk.js.map",
-    "runtime-main.js": "/static/js/runtime-main.221d8117.js",
-    "runtime-main.js.map": "/static/js/runtime-main.221d8117.js.map",
-    "static/js/2.45366146.chunk.js": "/static/js/2.45366146.chunk.js",
-    "static/js/2.45366146.chunk.js.map": "/static/js/2.45366146.chunk.js.map",
-    "index.html": "/index.html",
-    "static/css/main.626adc0c.chunk.css.map": "/static/css/main.626adc0c.chunk.css.map",
-    "static/js/2.45366146.chunk.js.LICENSE.txt": "/static/js/2.45366146.chunk.js.LICENSE.txt"
+    "main.css": "/gridnine-systems-test/static/css/main.8145106f.chunk.css",
+    "main.js": "/gridnine-systems-test/static/js/main.8523d472.chunk.js",
+    "main.js.map": "/gridnine-systems-test/static/js/main.8523d472.chunk.js.map",
+    "runtime-main.js": "/gridnine-systems-test/static/js/runtime-main.068ec9be.js",
+    "runtime-main.js.map": "/gridnine-systems-test/static/js/runtime-main.068ec9be.js.map",
+    "static/js/2.a58adb6f.chunk.js": "/gridnine-systems-test/static/js/2.a58adb6f.chunk.js",
+    "static/js/2.a58adb6f.chunk.js.map": "/gridnine-systems-test/static/js/2.a58adb6f.chunk.js.map",
+    "index.html": "/gridnine-systems-test/index.html",
+    "static/css/main.8145106f.chunk.css.map": "/gridnine-systems-test/static/css/main.8145106f.chunk.css.map",
+    "static/js/2.a58adb6f.chunk.js.LICENSE.txt": "/gridnine-systems-test/static/js/2.a58adb6f.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
-    "static/js/runtime-main.221d8117.js",
-    "static/js/2.45366146.chunk.js",
-    "static/css/main.626adc0c.chunk.css",
-    "static/js/main.31b492c9.chunk.js"
+    "static/js/runtime-main.068ec9be.js",
+    "static/js/2.a58adb6f.chunk.js",
+    "static/css/main.8145106f.chunk.css",
+    "static/js/main.8523d472.chunk.js"
   ]
 }
